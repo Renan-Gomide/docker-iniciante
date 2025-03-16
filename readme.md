@@ -455,18 +455,25 @@ Docker Swarm é uma ferramenta de orquestração de containers que permite geren
 ## 🛠️ Configuração e Monitoramento
 
 - Ver informações gerais sobre o Docker:
+  
   ```bash
   docker info
   ```
+
 - Exibir estatísticas de uso de CPU e memória dos containers:
+  
   ```bash
   docker stats
   ```
+
 - Inspecionar detalhes de um container:
+  
   ```bash
   docker inspect nome-container
   ```
+
 - Atualizar configurações de um container em execução:
+  
   ```bash
   docker update nome-container -m 128m --cpus 0.3
   ```
@@ -476,18 +483,25 @@ Docker Swarm é uma ferramenta de orquestração de containers que permite geren
 ## 🌐 Gerenciamento de Redes
 
 - Listar redes disponíveis:
+
   ```bash
   docker network ls
   ```
+
 - Criar uma nova rede:
+
   ```bash
   docker network create minha-rede
   ```
+
 - Conectar um container a uma rede específica:
+
   ```bash
   docker network connect minha-rede nome-container
   ```
+
 - Desconectar um container de uma rede:
+
   ```bash
   docker network disconnect minha-rede nome-container
   ```
