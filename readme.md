@@ -237,6 +237,48 @@ Volumes permitem armazenar dados persistentes fora dos containers.
 
 ---
 
+## 🛠️ Configuração e Monitoramento
+
+- Ver informações gerais sobre o Docker:
+  ```bash
+  docker info
+  ```
+- Exibir estatísticas de uso de CPU e memória dos containers:
+  ```bash
+  docker stats
+  ```
+- Inspecionar detalhes de um container:
+  ```bash
+  docker inspect nome-container
+  ```
+- Atualizar configurações de um container em execução:
+  ```bash
+  docker update nome-container -m 128m --cpus 0.3
+  ```
+
+---
+
+## 🌐 Gerenciamento de Redes
+
+- Listar redes disponíveis:
+  ```bash
+  docker network ls
+  ```
+- Criar uma nova rede:
+  ```bash
+  docker network create minha-rede
+  ```
+- Conectar um container a uma rede específica:
+  ```bash
+  docker network connect minha-rede nome-container
+  ```
+- Desconectar um container de uma rede:
+  ```bash
+  docker network disconnect minha-rede nome-container
+  ```
+
+---
+
 ## 📌 Resumo dos Comandos
 
 | Comando | Descrição |
@@ -256,6 +298,15 @@ Volumes permitem armazenar dados persistentes fora dos containers.
 | `docker exec nome-container ls` | Executa comandos dentro do container |
 | `docker volume create meu-volume` | Cria um volume nomeado |
 | `docker run -dti --mount type=bind,src=/host,dst=/container` | Monta um diretório do host no container |
+| `docker logs nome-container` | Exibe logs do container |
+| `docker top nome-container` | Mostra processos dentro do container |
+| `docker stats` | Monitora uso de CPU e memória |
+| `docker update nome-container -m 128m --cpus 0.3` | Atualiza limites de recursos do container |
+| `docker info` | Exibe informações gerais do Docker |
+| `docker inspect nome-container` | Mostra detalhes de um container |
+| `docker network ls` | Lista redes do Docker |
+| `docker network connect minha-rede nome-container` | Conecta um container a uma rede |
+| `docker network disconnect minha-rede nome-container` | Desconecta um container de uma rede |
 
 ---
 
