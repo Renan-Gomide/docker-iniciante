@@ -47,7 +47,7 @@ Após isso, saia e entre novamente no sistema.
 
 ### 🔍 Como procurar imagens no Docker Hub
 
-O Docker Hub (https://hub.docker.com/) é um repositório onde você pode encontrar diversas imagens prontas.
+O [Docker Hub](https://hub.docker.com/) é um repositório onde você pode encontrar diversas imagens prontas.
 
 Para buscar imagens diretamente no terminal:
 
@@ -139,6 +139,48 @@ docker images
 
   ```bash
   docker container prune
+  ```
+
+- Inspecionar um container:
+
+  ```bash
+  docker inspect nome-container
+  ```
+
+- Ver logs de um container:
+
+  ```bash
+  docker logs nome-container
+  ```
+
+- Acessar o terminal de um container em execução:
+
+  ```bash
+  docker exec -it nome-container /bin/bash
+  ```
+
+- Parar todos os containers em execução:
+
+  ```bash
+  docker stop $(docker ps -q)
+  ```
+
+- Remover todos os containers:
+
+  ```bash
+  docker rm $(docker ps -a -q)
+  ```
+
+- Remover todas as imagens:
+
+  ```bash
+  docker rmi $(docker images -q)
+  ```
+
+- Remover todos os volumes não utilizados:
+
+  ```bash
+  docker volume prune
   ```
 
 ---
@@ -234,6 +276,179 @@ Volumes permitem armazenar dados persistentes fora dos containers.
   ```bash
   docker run -dti --mount type=bind,src=/caminho/host,dst=/caminho/container,readonly ubuntu
   ```
+
+---
+
+## 🛠️ Criação de Imagens com Dockerfile
+
+Um Dockerfile é um script de texto que contém uma série de instruções para construir uma imagem Docker. Aqui está um exemplo básico de como criar uma imagem Docker:
+
+1. Crie um arquivo chamado `Dockerfile` e adicione o seguinte conteúdo:
+
+    ```dockerfile
+    FROM ubuntu
+    RUN apt update && apt install -y python3 nano && apt clean
+    COPY arquivo-teste.py /pasta/destino/container/arquivo-teste.py
+    CMD python3 /pasta/destino/container/arquivo-teste.py
+    ```
+
+    - `FROM ubuntu`: Define a imagem base como Ubuntu.
+    - `RUN apt update && apt install -y python3 nano && apt clean`: Atualiza os pacotes e instala Python3 e Nano.
+    - `COPY arquivo-teste.py /pasta/destino/container/arquivo-teste.py`: Copia o arquivo `arquivo-teste.py` do host para o container.
+    - `CMD python3 /pasta/destino/container/arquivo-teste.py`: Define o comando padrão a ser executado quando o container iniciar.
+
+2. Para construir a imagem, execute o seguinte comando no diretório onde o Dockerfile está localizado:
+
+    ```bash
+    docker build . -t imagem-container
+    ```
+
+    - `.`: Indica o diretório atual.
+    - `-t imagem-container`: Nomeia a imagem como `imagem-container`.
+
+---
+
+## 🏗️ Criação de Imagens Multistage com Dockerfile
+
+Imagens multistage permitem criar imagens Docker mais eficientes, reduzindo o tamanho final da imagem ao copiar apenas os artefatos necessários da fase de construção.
+
+1. Crie um arquivo chamado `Dockerfile` e adicione o seguinte conteúdo:
+
+    ```dockerfile
+    # Fase de construção
+    FROM golang:1.16 AS builder
+    WORKDIR /app
+    COPY . .
+    RUN go build -o meu-app
+
+    # Fase final
+    FROM alpine:latest
+    WORKDIR /root/
+    COPY --from=builder /app/meu-app .
+    CMD ["./meu-app"]
+    ```
+
+    - `FROM golang:1.16 AS builder`: Define a fase de construção usando a imagem Golang.
+    - `WORKDIR /app`: Define o diretório de trabalho.
+    - `COPY . .`: Copia todos os arquivos do diretório atual para o container.
+    - `RUN go build -o meu-app`: Compila o aplicativo Go.
+    - `FROM alpine:latest`: Define a fase final usando a imagem Alpine.
+    - `COPY --from=builder /app/meu-app .`: Copia o binário compilado da fase de construção para a fase final.
+    - `CMD ["./meu-app"]`: Define o comando padrão a ser executado quando o container iniciar.
+
+2. Para construir a imagem, execute o seguinte comando no diretório onde o Dockerfile está localizado:
+
+    ```bash
+    docker build . -t meu-app
+    ```
+
+---
+
+## 🛠️ Como Instalar o Docker Compose
+
+Docker Compose é uma ferramenta para definir e gerenciar aplicativos Docker multi-container. Para instalar o Docker Compose:
+
+1. Baixe a versão mais recente do Docker Compose:
+
+    ```bash
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    ```
+
+2. Aplique permissões executáveis ao binário:
+
+    ```bash
+    sudo chmod +x /usr/local/bin/docker-compose
+    ```
+
+3. Verifique a instalação:
+
+    ```bash
+    docker-compose --version
+    ```
+
+---
+
+## 📝 Como Criar um Arquivo YAML para Docker Compose
+
+Um arquivo YAML define os serviços, redes e volumes para um aplicativo Docker Compose. Aqui está um exemplo básico:
+
+1. Crie um arquivo chamado `docker-compose.yml` e adicione o seguinte conteúdo:
+
+    ```yaml
+    version: '3'
+    services:
+      web:
+        image: nginx
+        ports:
+          - "80:80"
+      db:
+        image: mysql
+        environment:
+          MYSQL_ROOT_PASSWORD: exemplo
+    ```
+
+    - `version: '3'`: Define a versão do Docker Compose.
+    - `services`: Define os serviços do aplicativo.
+    - `web`: Serviço web usando a imagem Nginx.
+    - `ports`: Mapeia a porta 80 do host para a porta 80 do container.
+    - `db`: Serviço de banco de dados usando a imagem MySQL.
+    - `environment`: Define variáveis de ambiente para o serviço de banco de dados.
+
+2. Para iniciar os serviços definidos no arquivo YAML, execute:
+
+    ```bash
+    docker-compose up
+    ```
+
+---
+
+## 🌐 O que é Docker Swarm
+
+Docker Swarm é uma ferramenta de orquestração de containers que permite gerenciar um cluster de nodes Docker como um único sistema. Com Docker Swarm, você pode implantar, gerenciar e escalar aplicativos em containers de forma fácil e eficiente.
+
+### Comandos Básicos do Docker Swarm
+
+1. Inicializar um Swarm:
+
+    ```bash
+    docker swarm init
+    ```
+
+2. Adicionar um node ao Swarm:
+
+    ```bash
+    docker swarm join --token <token> <manager-ip>:<manager-port>
+    ```
+
+3. Listar nodes no Swarm:
+
+    ```bash
+    docker node ls
+    ```
+
+4. Criar um serviço no Swarm:
+
+    ```bash
+    docker service create --name meu-servico -p 80:80 nginx
+    ```
+
+5. Listar serviços no Swarm:
+
+    ```bash
+    docker service ls
+    ```
+
+6. Escalar um serviço no Swarm:
+
+    ```bash
+    docker service scale meu-servico=3
+    ```
+
+7. Remover um serviço do Swarm:
+
+    ```bash
+    docker service rm meu-servico
+    ```
 
 ---
 
